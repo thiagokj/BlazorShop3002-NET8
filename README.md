@@ -42,11 +42,11 @@ Já no caso do Blazor, temos ambas as opções, interativo com o lado do cliente
 
 Projeto rodando diretamente via bytecode no Browser. O WebAssembly é muito mais performático que o Javascript.
 
-Os WebAssembly podem rodar PWAs - Progressive Web App. Essas aplicações podem rodar tanto no navegador quanto no Desktop.
+O WebAssembly pode rodar PWAs - Progressive Web Apps. Essas aplicações podem rodar tanto no navegador quanto no Desktop.
 
 No Desktop, temos acesso a notificações e todos os recursos da máquina do usuário.
 
-O PWA pode rodar offline, é apenas um pacote. Pode ser util para rodar em um servidor por ser muito simples.
+O PWA pode rodar offline, sendo apenas um pacote. Pode ser útil para rodar em um servidor por ser muito simples.
 
 ### Templates
 
@@ -64,14 +64,16 @@ Tudo é feito **Automagicamente**, bastando criar um projeto com esse novo templ
 
 Utilizando esse atributo, o carregamento é feito da forma mais rápida possível, trazendo a pagina em partes até o loading total.
 
-Isso deixa a aplicação mais dinâmica e o usuário nao fica com a sensação de tela travada, clicando em algum componente diversas vezes para "forçar" a exibição dos dados.
+Isso deixa a aplicação mais dinâmica e o usuário não fica com a sensação de tela travada, clicando em algum componente diversas vezes para "forçar" a exibição dos dados.
 
 ### Render Modes
 
-Os componentes precisam ter especificados qual será o modo de renderização. Caso não seja informado, o padrão é usar apenas via servidor, sendo o SSR. Os 3 modos de interatividade: Server, WebAssembly e Auto.
+Os componentes precisam ter especificados qual será o modo de renderização. Caso não seja informado, o padrão é usar apenas via servidor, sendo o SSR. Os 3 modos de interatividade são: **Server**, **WebAssembly** e **Auto**.
 
 **Server** - Inicia mais rápido, porem sempre conectado ao servidor.
+
 **WebAssembly** - Primeira execução lenta, precisa baixar o runtime. Próximas execuções muito rápidas.
+
 **Auto** - Executa a primeira vez mais rápido, enquanto baixa o runtime, sendo o cenário mais inteligente.
 
 ### Blazor Hybrid
@@ -152,7 +154,7 @@ dotnet new blazor -o BlazorShop --auth Individual
        public string? Description { get; set; }
 
        [Required(ErrorMessage = "Informe o preço do produto")]
-       [DataType(DataType.Currency)] // Informa o tipo de dados no padrão Moeda R$
+       [DataType(DataType.Currency)] // Informa o tipo de dados no padrão Moeda. Formato $, R$, etc.
        public decimal Price { get; set; }
 
        public int CategoryId { get; set; }
@@ -175,7 +177,7 @@ namespace BlazorShop.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
-    // Passando a referencia para criar as tabelas Produto e Categoria
+    // Passando a referencia para criar as tabelas Produtos e Categorias
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
 }
@@ -230,16 +232,16 @@ dotnet ef update database
        // Chama as validações declaradas na Entidade Category
        <DataAnnotationsValidator />
 
-       // Exibir na tela o resumo das validações
+       // Exibe na tela o resumo das validações
        <ValidationSummary />
 
        <div class="mb-3">
            <label class="form-label">Nome da categoria</label>
 
-           // Recupera a propriedade do Titulo da Categoria
+           // Recupera a propriedade do Título da Categoria
            <InputText @bind-Value="Model.Title" class="form-control"/>
 
-           // Exibe apenas a validação especifica
+           // Exibe apenas a validação específica
            <ValidationMessage For="@(() => Model.Title)"/>
        </div>
 
@@ -253,9 +255,7 @@ dotnet ef update database
        // Objeto vinculado ao formulário
        public Category Model { get; set; } = new();
 
-       protected override void OnInitialized()
-       {
-       }
+       protected override void OnInitialized() {}
 
        // Ao enviar o formulário, grava o objeto no banco e redireciona para pagina categories
        public async Task OnValidSubmitAsync()
@@ -267,12 +267,12 @@ dotnet ef update database
    }
    ```
 
-2. Como temos a pagina que permite criar categorias, crie a pagina Index para listar as mesmas.
+2. Como temos a pagina que permite criar categorias, crie a pagina Index.razor para listar as mesmas.
 
    ```csharp
    @page "/categories"
    @inject ApplicationDbContext Context
-   @attribute [StreamRendering(true)] // Permite o carregamento por partes da pagina, melhorando a exp. do usuário.
+   @attribute [StreamRendering(true)] // Permite o carregamento por partes da página, melhorando a exp. do usuário.
 
    <h1>Categorias</h1>
    <a href="/categories/create" class="btn btn-primary">Nova Categoria</a>
@@ -333,12 +333,11 @@ dotnet ef update database
    }
 
    @code {
-
        // Propriedade inicializando uma lista vazia de categorias
        public IEnumerable<Category> Categories { get; set; }
            = Enumerable.Empty<Category>();
 
-       // Ao carregar a pagina, recupera as categorias e preenche a lista
+       // Ao carregar a página, recupera as categorias e preenche a lista
        protected override async Task OnInitializedAsync()
        {
            Categories = await Context
@@ -349,10 +348,10 @@ dotnet ef update database
    }
    ```
 
-3. Crie a pagina Edit.razor para edição das categorias.
+3. Crie a página Edit.razor para edição das categorias.
 
    ```csharp
-   @page "/categories/edit/{id:int}" // Restrição de rota com parâmetro id que deve ser um numero inteiro
+   @page "/categories/edit/{id:int}" // Restrição de rota com parâmetro id. Especificado tipo como numero inteiro
    @inject ApplicationDbContext Context
    @inject NavigationManager Navigation
    @rendermode InteractiveServer // Indica o processamento no servidor
@@ -367,7 +366,7 @@ dotnet ef update database
    }
    else
    {
-       // Titulo da pagina recuperando as propriedades da Model
+       // Título da página recuperando as propriedades da Model
        <h1>@Model.Title (@Model.Id)</h1>
 
        // Formulário para editar a categoria, similar ao formulário da pagina Create
@@ -389,14 +388,13 @@ dotnet ef update database
    }
 
    @code {
-
        // Indica que o valor da Propriedade Id será recuperado pela URL como Parâmetro
        [Parameter]
        public int Id { get; set; }
 
        public Category? Model { get; set; }
 
-       // Carrega a categoria ao inicializar a pagina
+       // Carrega a categoria ao inicializar a página
        protected override async Task OnInitializedAsync()
        {
            Model = await Context
@@ -459,14 +457,14 @@ dotnet ef update database
    }
    ```
 
-5. Crie a pagina Delete.razor para excluir a categoria.
+5. Crie a página Delete.razor para excluir a categoria.
 
 ```csharp
 @page "/categories/delete/{id:int}"
 @inject ApplicationDbContext Context
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
-@* @attribute [Authorize(Roles = "ADMIN")] *@ // Apenas usuários com perfil ADMIN podem acessar a pagina
+@* @attribute [Authorize(Roles = "admin")] *@ // Apenas usuários com perfil "admin" podem acessar a página
 
 @if (Model is null)
 {
@@ -541,7 +539,7 @@ A estrutura será similar ao CRUD de categorias.
    // ... Códigos abaixo
    ```
 
-1. Crie a pagina Create.razor para criar um produto.
+1. Crie a página Create.razor para criar um produto.
 
    ```csharp
    @page "/products/create"
@@ -565,7 +563,7 @@ A estrutura será similar ao CRUD de categorias.
            <label class="form-label">Preço</label>
 
            // Aqui é usado o InputNumber, pois estamos trabalhando com números.
-           // Existem outros tipos de inputs para usar com Blazor, use o mais adequado de acordo
+           // Existem outros tipos de Inputs para usar com Blazor, use o mais adequado de acordo
            // com o tipo de dados do campo
            <InputNumber @bind-Value="Model.Price" class="form-control" />
            <ValidationMessage For="@(() => Model.Price)" />
@@ -577,7 +575,7 @@ A estrutura será similar ao CRUD de categorias.
            // InputSelect para listar e selecionar os dados em um Dropdown.
            // Vincula a propriedade CategoryId da Model Produto
            <InputSelect @bind-Value="Model.CategoryId" class="form-control">
-               // Lista todas as categorias mostrando o titulo de cada uma, passando como valor
+               // Lista todas as categorias mostrando o título de cada uma, passando como valor
                // o Id da Categoria
                @foreach (var category in Categories)
                {
@@ -599,7 +597,7 @@ A estrutura será similar ao CRUD de categorias.
        public Product Model { get; set; } = new();
        public IEnumerable<Category> Categories { get; set; } = Enumerable.Empty<Category>();
 
-       // Ao carregar a pagina, carrega preenche a lista de categorias
+       // Ao carregar a página, preenche a lista de categorias
        protected override async void OnInitialized()
        {
            Categories = await Context
@@ -619,7 +617,7 @@ A estrutura será similar ao CRUD de categorias.
    }
    ```
 
-1. Crie a pagina Index.razor, exibindo todos os produtos.
+1. Crie a página Index.razor, exibindo todos os produtos.
 
    ```csharp
    @page "/products"
@@ -662,13 +660,13 @@ A estrutura será similar ao CRUD de categorias.
                            @product.Category.Title
                        </td>
                        <td>
-                           @product.Price.ToString("C", new CultureInfo("pt-BR"))
+                           @product.Price.ToString("C", new CultureInfo("pt-BR")) // Formata moeda para R$
                        </td>
                        <td>
                            <a href="/products/edit/@product.Id" class="btn btn-primary">
                                Editar
                            </a>
-                           &nbsp;&nbsp;
+                           &nbsp;&nbsp; // Espaços entre botões
                            <a href="/products/delete/@product.Id" class="btn btn-danger">
                                Excluir
                            </a>
@@ -695,7 +693,7 @@ A estrutura será similar ao CRUD de categorias.
    }
    ```
 
-1. Crie a pagina Edit.razor para editar o produto.
+1. Crie a página Edit.razor para editar o produto.
 
 ```csharp
 @page "/products/edit/{id:int}" // Id do produto passado via parâmetro na URL
@@ -740,7 +738,6 @@ A estrutura será similar ao CRUD de categorias.
 </EditForm>
 
 @code {
-
     // Id recuperado via URL
     [Parameter]
     public int Id { get; set; }
@@ -756,7 +753,7 @@ A estrutura será similar ao CRUD de categorias.
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == Id) ?? new();
 
-        // Recupera todas as categorias ordenando por título
+        // Recupera todas as categorias, ordenando por título
         Categories = await Context
             .Categories
             .AsNoTracking()
@@ -789,7 +786,7 @@ INSERT INTO "main"."AspNetUserRoles" ("UserId", "RoleId")
 VALUES ('9086dee8-40f5-460c-9aeb-0fc541eb1525', '8fbc2a14-7b1e-40b1-bec0-82e33d1b806b');
 ```
 
-Para recuperar as informações de um usuário logado na aplicação, use como exemplo a pagina Auth.razor
+Para recuperar as informações de um usuário logado na aplicação, use como exemplo a pagina Auth.razor.
 
 ```csharp
 @page "/auth"
@@ -808,16 +805,16 @@ Para recuperar as informações de um usuário logado na aplicação, use como e
     admin: @context.User.IsInRole("admin")
 </AuthorizeView>
 
-// Limitando o acesso por pelo perfil, por pagina. Ex: Categories -> Delete.razor
+// Limitando o acesso via perfil, por página. Ex: Categories -> Delete.razor
 
 @page "/categories/delete/{id:int}"
 @inject ApplicationDbContext Context
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
-@attribute [Authorize(Roles = "admin")] // Somente o Role "admin" pode acessar essa pagina
+@attribute [Authorize(Roles = "admin")] // Somente o Role "admin" pode acessar essa página
 ```
 
-### Por enquanto, é isso aí. Bons estudos e bons códigos! 👍
+### Bom, é isso aí. Bons estudos e bons códigos! 👍
 
 [balta]: https://github.com/balta-io/3002
 [Passpad]: https://andrebaltieri.github.io/passpad/
