@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using BlazorShop.Components;
 using BlazorShop.Components.Account;
 using BlazorShop.Data;
 

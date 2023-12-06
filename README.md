@@ -786,6 +786,17 @@ INSERT INTO "main"."AspNetUserRoles" ("UserId", "RoleId")
 VALUES ('9086dee8-40f5-460c-9aeb-0fc541eb1525', '8fbc2a14-7b1e-40b1-bec0-82e33d1b806b');
 ```
 
+Adicione a inicialização da aplicação o método **.AddRoles<IdentityRole>()** conforme abaixo.
+
+```csharp
+builder.Services.AddIdentityCore<ApplicationUser>(options
+    => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
+```
+
 Para recuperar as informações de um usuário logado na aplicação, use como exemplo a pagina Auth.razor.
 
 ```csharp
